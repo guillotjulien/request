@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,11 +21,11 @@
 
 G_BEGIN_DECLS
 
-#define REQUEST_TYPE_WINDOW (request_window_get_type())
+#define REQUEST_TYPE_WINDOW (request_window_get_type ())
 
 G_DECLARE_FINAL_TYPE (RequestWindow, request_window, REQUEST, WINDOW, GtkApplicationWindow)
 
-void request_window_on_activate (GtkWidget *widget, gpointer user_data);
-void request_window_set_paned_view_size (RequestWindow *self);
+void request_window_on_activate (GtkWidget * widget, gpointer user_data);
+void request_window_set_paned_view_size (RequestWindow * self);
 
 G_END_DECLS
