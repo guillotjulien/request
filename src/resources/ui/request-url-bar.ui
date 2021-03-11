@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <requires lib="gtk+" version="4.0"/>
+    <template class="RequestURLBar" parent="GtkBox">
+        <child>
+            <object class="GtkComboBoxText" id="http_verb_selector">
+                <property name="active-id">get</property>
+
+                <items>
+                    <item id="get" translatable="yes">GET</item>
+                    <item id="post" translatable="yes">POST</item>
+                    <item id="put" translatable="yes">PUT</item>
+                    <item id="patch" translatable="yes">PATCH</item>
+                    <item id="delete" translatable="yes">DELETE</item>
+                    <item id="head" translatable="yes">HEAD</item>
+                    <item id="options" translatable="yes">OPTIONS</item>
+                </items>
+            </object>
+        </child>
+
+        <child>
+            <object class="GtkEntry" id="url_bar">
+                <property name="hexpand">True</property>
+                <property name="placeholder-text" translatable="yes">https://api.example.com/v1/products</property>
+                <property name="input-purpose">url</property>
+            </object>
+        </child>
+
+        <child>
+            <object class="GtkButton" id="send_button">
+                <property name="label" translatable="yes">Send</property>
+            </object>
+        </child>
+
+        <style>
+            <class name="request_url_bar"/>
+        </style>
+    </template>
+</interface>

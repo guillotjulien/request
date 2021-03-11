@@ -1,0 +1,25 @@
+.request_response_bar {
+	padding: .5rem .75rem;
+
+    label {
+        padding: .25rem;
+        margin: 0 .25rem;
+    }
+
+    .request_response_bar__code {
+        color: white;
+        padding: .25rem .5rem;
+
+        &.success {
+            background: #82B939;
+        }
+
+        &.warning {
+            background: #E18D27;
+        }
+
+        &.error {
+            background: #D35D54;
+        }
+    }
+}

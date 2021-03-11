@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/com/github/guillotjulien/request">
+    <file compressed="true" preprocess="xml-stripblanks">resources/ui/window.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">resources/ui/request-url-bar.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">resources/ui/request-response-bar.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">resources/ui/request-header-view.ui</file>
+
+    <file alias="style.css">../theme/style.css</file>
+  </gresource>
+</gresources>

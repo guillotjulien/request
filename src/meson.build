@@ -1,0 +1,29 @@
+request_sources = [
+  'main.c',
+  'request-window.c',
+  'request-url-bar.c',
+  'request-response-bar.c',
+  'request-header-list.c',
+]
+
+request_deps = [
+  dependency('glib-2.0', version: '>= 2.66'),
+  dependency('gio-2.0', version: '>= 2.50'),
+  dependency('gtk4', version: '>= 4.0'),
+  dependency('libsoup-2.4'),
+  dependency('libcurl'),
+  dependency('liburiparser'),
+]
+
+gnome = import('gnome')
+
+request_sources += gnome.compile_resources('request-resources',
+  'resources/request.gresource.xml',
+  dependencies: [ theme ],
+  c_name: 'request'
+)
+
+executable('request', request_sources,
+  dependencies: request_deps,
+  install: true,
+)

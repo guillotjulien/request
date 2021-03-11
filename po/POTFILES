@@ -1,0 +1,7 @@
+data/com.github.guillotjulien.request.desktop.in
+data/com.github.guillotjulien.request.appdata.xml.in
+data/com.github.guillotjulien.request.gschema.xml
+src/request-window.ui
+src/main.c
+src/request-window.c
+
