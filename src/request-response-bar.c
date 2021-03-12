@@ -88,7 +88,7 @@ static char * request_response_bar_get_response_size (goffset raw_length) {
             return g_strdup_printf ("%.2f %s", (float) length / multiplier, sizes[i]);
     }
 
-    return "0";
+    return "0 B";
 }
 
 RequestResponseBar * request_response_bar_new (void) {
@@ -140,7 +140,6 @@ void request_response_bar_on_message_received (SoupMessage * msg, RequestRespons
         }
 
         gtk_label_set_markup (self->request_code_label, g_strdup_printf ("<span weight='600'>%s</span> %s", status_code, soup_status_get_phrase (msg->status_code)));
-        // gtk_widget_set_tooltip_text (GTK_WIDGET (self->request_code_label), soup_status_get_phrase (msg->status_code));
     } else {
         gtk_label_set_label (self->request_code_label, "error");
         gtk_style_context_add_class (context, "error");

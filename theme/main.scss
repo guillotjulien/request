@@ -2,3 +2,11 @@
 
 @import 'widgets/request-response-bar';
 @import 'widgets/request-url-bar';
+
+overlay {
+    background: rgba(255, 255, 255, 0.8);
+}
+
+spinner {
+    color: $font;
+}

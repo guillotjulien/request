@@ -79,8 +79,8 @@ static void request_window_init (RequestWindow * self) {
 
     request_window_set_paned_view_size (self);
 
-    GtkWidget * left = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-    GtkWidget * right = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+    GtkWidget * left = gtk_grid_new ();
+    GtkWidget * right = gtk_grid_new ();
 
     gtk_paned_set_start_child (self->main_grid, left);
     gtk_paned_set_end_child (self->main_grid, right);
@@ -91,7 +91,7 @@ static void request_window_init (RequestWindow * self) {
 
     self->request_url_bar = request_url_bar_new ();
     if (self->request_url_bar != NULL) {
-        gtk_box_append (GTK_BOX (left), GTK_WIDGET (self->request_url_bar));
+        gtk_grid_attach (GTK_GRID (left), GTK_WIDGET (self->request_url_bar), 0, 0, 1, 1);
 
         g_signal_connect (self->request_url_bar, REQUEST_STARTED_SIGNAL, G_CALLBACK (on_request_start), self);
         g_signal_connect (self->request_url_bar, REQUEST_COMPLETED_SIGNAL, G_CALLBACK (on_request_complete), self);
@@ -99,10 +99,43 @@ static void request_window_init (RequestWindow * self) {
 
     self->request_response_bar = request_response_bar_new ();
     if (self->request_response_bar != NULL) {
-        gtk_box_append (GTK_BOX (right), GTK_WIDGET (self->request_response_bar));
+        gtk_grid_attach (GTK_GRID (right), GTK_WIDGET (self->request_response_bar), 0, 0, 1, 1);
     }
 
-    // TODO: Add separator after the URL bar and response bar
+    // FIXME: Extract in a .ui file
+    GtkWidget * loading_overlay = gtk_overlay_new ();
+    gtk_widget_set_hexpand (loading_overlay, TRUE);
+    gtk_widget_set_vexpand (loading_overlay, TRUE);
+    gtk_widget_set_halign (loading_overlay, GTK_ALIGN_FILL);
+    gtk_widget_set_valign (loading_overlay, GTK_ALIGN_FILL);
+
+    GtkWidget * overlay_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 25);
+    gtk_widget_set_size_request (overlay_box, 300, 300);
+    gtk_widget_set_halign (overlay_box, GTK_ALIGN_CENTER);
+    gtk_widget_set_valign (overlay_box, GTK_ALIGN_CENTER);
+
+    gtk_overlay_set_child (GTK_OVERLAY (loading_overlay), overlay_box);
+
+    GtkWidget * spinner = gtk_spinner_new ();
+    gtk_widget_set_size_request (spinner, 100, 100);
+    gtk_widget_set_halign (spinner, GTK_ALIGN_CENTER);
+    gtk_widget_set_valign (spinner, GTK_ALIGN_CENTER);
+    gtk_spinner_set_spinning (GTK_SPINNER (spinner), TRUE);
+
+    GtkWidget * cancel = gtk_button_new ();
+    gtk_widget_set_halign (cancel, GTK_ALIGN_CENTER);
+    gtk_widget_set_valign (cancel, GTK_ALIGN_CENTER);
+    gtk_widget_set_hexpand (cancel, FALSE);
+    gtk_widget_set_vexpand (cancel, FALSE);
+    gtk_button_set_label (GTK_BUTTON (cancel), "Cancel");
+
+    GtkStyleContext * context = gtk_widget_get_style_context (cancel);
+    gtk_style_context_add_class (context, "flat");
+
+    gtk_box_append (GTK_BOX (overlay_box), spinner);
+    gtk_box_append (GTK_BOX (overlay_box), cancel);
+
+    gtk_grid_attach (GTK_GRID (right), loading_overlay, 0, 0, 1, 1);
 }
 
 void request_window_set_paned_view_size (RequestWindow * self) {

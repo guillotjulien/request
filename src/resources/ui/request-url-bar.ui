@@ -40,6 +40,10 @@
                 <child>
                     <object class="GtkButton" id="send_button">
                         <property name="label" translatable="yes">Send</property>
+
+                        <style>
+                            <class name="flat"/>
+                        </style>
                     </object>
                 </child>
             </object>

@@ -3,6 +3,7 @@
     <requires lib="gtk+" version="4.0"/>
     <template class="RequestResponseBar" parent="GtkBox">
         <property name="orientation">vertical</property>
+        <property name="hexpand">True</property>
 
         <child>
             <object class="GtkBox" id="request_bar">
