@@ -9,6 +9,7 @@ theme = custom_target('Theme generation',
 		'@INPUT@', '@OUTPUT@',
 	],
 	depend_files: files([
+        '_colors.scss',
         'widgets/_request-response-bar.scss',
         'widgets/_request-url-bar.scss',
 	]),

@@ -8,7 +8,7 @@
         margin-right: 1em;
         border: 1px solid rgba(0, 0, 0, 0.07);
         font-size: 13px;
-        color: #555555;
+        color: $font;
         padding: .25rem .5rem;
     }
 
@@ -16,18 +16,18 @@
         color: white;
         
         &.success {
-            background: #82B939;
-            text-shadow: 0 0 0.05em #82B939;
+            background: $success;
+            text-shadow: 0 0 0.05em $success;
         }
 
         &.warning {
-            background: #E18D27;
-            text-shadow: 0 0 0.05em #E18D27;
+            background: $warning;
+            text-shadow: 0 0 0.05em $warning;
         }
 
         &.error {
-            background: #D35D54;
-            text-shadow: 0 0 0.05em #D35D54;
+            background: $danger;
+            text-shadow: 0 0 0.05em $danger;
         }
     }
 }

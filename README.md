@@ -6,7 +6,7 @@ Nothing to see here!
 
 - `meson build`
 - `ninja -C build`
-- `./build/src/request`
+- `G_MESSAGES_DEBUG=all ./build/src/request`
 
 ## Format
 

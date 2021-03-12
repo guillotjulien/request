@@ -2,34 +2,51 @@
 <interface>
     <requires lib="gtk+" version="4.0"/>
     <template class="RequestURLBar" parent="GtkBox">
-        <child>
-            <object class="GtkComboBoxText" id="http_verb_selector">
-                <property name="active-id">get</property>
+        <property name="orientation">vertical</property>
 
-                <items>
-                    <item id="get" translatable="yes">GET</item>
-                    <item id="post" translatable="yes">POST</item>
-                    <item id="put" translatable="yes">PUT</item>
-                    <item id="patch" translatable="yes">PATCH</item>
-                    <item id="delete" translatable="yes">DELETE</item>
-                    <item id="head" translatable="yes">HEAD</item>
-                    <item id="options" translatable="yes">OPTIONS</item>
-                </items>
+        <child>
+            <object class="GtkBox">
+                <property name="height-request">50</property>
+                <child>
+                    <object class="GtkComboBoxText" id="http_verb_selector">
+                        <property name="active-id">get</property>
+                        <!-- FIXME: We can't set GtkEntry width resulting in lots of wasted space... -->
+                        <!-- <property name="has-entry">True</property>
+
+                        <child internal-child="entry">
+                            <object class="GtkEntry" id="http_verb_entry"></object>
+                        </child> -->
+
+                        <items>
+                            <item id="get">GET</item>
+                            <item id="post">POST</item>
+                            <item id="put">PUT</item>
+                            <item id="patch">PATCH</item>
+                            <item id="delete">DELETE</item>
+                            <item id="head">HEAD</item>
+                            <item id="options">OPTIONS</item>
+                        </items>
+                    </object>
+                </child>
+
+                <child>
+                    <object class="GtkEntry" id="url_bar">
+                        <property name="hexpand">True</property>
+                        <property name="placeholder-text">https://api.example.com/v1/products</property>
+                        <property name="input-purpose">url</property>
+                    </object>
+                </child>
+
+                <child>
+                    <object class="GtkButton" id="send_button">
+                        <property name="label" translatable="yes">Send</property>
+                    </object>
+                </child>
             </object>
         </child>
 
         <child>
-            <object class="GtkEntry" id="url_bar">
-                <property name="hexpand">True</property>
-                <property name="placeholder-text" translatable="yes">https://api.example.com/v1/products</property>
-                <property name="input-purpose">url</property>
-            </object>
-        </child>
-
-        <child>
-            <object class="GtkButton" id="send_button">
-                <property name="label" translatable="yes">Send</property>
-            </object>
+            <object class="GtkSeparator"></object>
         </child>
 
         <style>

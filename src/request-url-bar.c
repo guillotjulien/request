@@ -74,11 +74,7 @@ static void request_url_bar_on_request_end (SoupMessage * msg, gpointer data) {
 
     RequestURLBarPrivate * priv = request_url_bar_get_instance_private (self);
 
-    // request_partials_request_bar_set_request_duration (self);
-
     priv->request_start_time = (gint64) 0;
-
-    // request_partials_request_bar_toggle_request_result_bar_visibility (self);
 
     g_signal_emit_by_name (self, REQUEST_COMPLETED_SIGNAL, msg);
 }
@@ -91,8 +87,7 @@ static void request_url_bar_on_request_submitted (GtkWidget * widget, gpointer d
     gchar * url = NULL;
 
     RequestURLBar * self = data;
-    if (data == NULL)
-        return; // FIXME: Crash
+    g_return_if_fail (self != NULL);
 
     entry_buffer = gtk_entry_get_buffer (self->url_bar);
     if (gtk_entry_buffer_get_length (entry_buffer) == 0)
@@ -141,10 +136,9 @@ static void request_url_bar_on_request_submitted (GtkWidget * widget, gpointer d
     }
 
     verb = gtk_combo_box_text_get_active_text (self->http_verb_selector);
-    if (verb == NULL)
-        return; // FIXME: Crash
+    if (strlen (verb) == (size_t) 0)
+        verb = "GET";
 
-    printf ("URL: %s | Verb: %s\n", url, verb);
     SoupURI * request_uri = soup_uri_new (url);
     if (!SOUP_URI_VALID_FOR_HTTP (request_uri)) {
         printf ("Invalid URI\n");
@@ -162,7 +156,7 @@ static void request_url_bar_on_request_submitted (GtkWidget * widget, gpointer d
     g_signal_connect_object (message, "starting", G_CALLBACK (request_url_bar_on_request_start), self, 0);
     g_signal_connect_object (message, "finished", G_CALLBACK (request_url_bar_on_request_end), self, 0);
 
-    soup_session_send_message (session, message);
+    soup_session_send_async (session, message, G_PRIORITY_DEFAULT, NULL, NULL);
 
     uriFreeUriMembersA (&uri);
     g_object_unref (message);
@@ -183,6 +177,10 @@ static void request_url_bar_class_init (RequestURLBarClass * klass) {
 static void request_url_bar_init (RequestURLBar * self) {
     gtk_widget_init_template (GTK_WIDGET (self));
     gtk_widget_set_size_request (GTK_WIDGET (self), 400, -1);
+
+    g_return_if_fail (GTK_IS_WIDGET (self->http_verb_selector));
+    g_return_if_fail (GTK_IS_WIDGET (self->url_bar));
+    g_return_if_fail (GTK_IS_WIDGET (self->send_button));
 
     // Declare our own signals
     g_signal_new (REQUEST_STARTED_SIGNAL, REQUEST_TYPE_URL_BAR, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__OBJECT, G_TYPE_NONE, 1, soup_message_get_type ());

@@ -1,5 +1,13 @@
 .request_url_bar {
-    .text-button {
+    combobox,
+    entry,
+    button {
         box-shadow: none;
+    }
+
+    cellview,
+    arrow,
+    button > label {
+        color: $font;
     }
 }

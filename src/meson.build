@@ -30,3 +30,6 @@ executable('request', request_sources,
   dependencies: request_deps,
   install: true,
 )
+
+# highlight
+# libgtksourceview3
