@@ -18,5 +18,10 @@
             "type": "shell",
             "command": "G_MESSAGES_DEBUG=all ./build/src/request"
         },
+        {
+            "label": "format",
+            "type": "shell",
+            "command": "find src/ \\( -name \"*.c\" -o -name \"*.h\" \\) -exec uncrustify -c uncrustify.cfg --no-backup --if-changed {} +"
+        }
     ]
 }

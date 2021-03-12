@@ -109,7 +109,7 @@ static void request_window_init (RequestWindow * self) {
     gtk_widget_set_halign (loading_overlay, GTK_ALIGN_FILL);
     gtk_widget_set_valign (loading_overlay, GTK_ALIGN_FILL);
 
-    GtkWidget * overlay_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 25);
+    GtkWidget * overlay_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 25);
     gtk_widget_set_size_request (overlay_box, 300, 300);
     gtk_widget_set_halign (overlay_box, GTK_ALIGN_CENTER);
     gtk_widget_set_valign (overlay_box, GTK_ALIGN_CENTER);
