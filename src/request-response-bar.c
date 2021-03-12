@@ -27,6 +27,7 @@ struct _RequestResponseBar {
     GtkBox parent_instance;
 
     /* Template widgets */
+    GtkBox * request_bar;
     GtkLabel * request_code_label;
     GtkLabel * request_duration_label;
     GtkLabel * request_size_label;
@@ -48,6 +49,7 @@ static void request_response_bar_class_init (RequestResponseBarClass * klass) {
     GtkWidgetClass * widget_class = GTK_WIDGET_CLASS (klass);
 
     gtk_widget_class_set_template_from_resource (widget_class, "/com/github/guillotjulien/request/resources/ui/request-response-bar.ui");
+    gtk_widget_class_bind_template_child (widget_class, RequestResponseBar, request_bar);
     gtk_widget_class_bind_template_child (widget_class, RequestResponseBar, request_code_label);
     gtk_widget_class_bind_template_child (widget_class, RequestResponseBar, request_duration_label);
     gtk_widget_class_bind_template_child (widget_class, RequestResponseBar, request_size_label);
@@ -58,9 +60,12 @@ static void request_response_bar_init (RequestResponseBar * self) {
     gtk_widget_set_size_request (GTK_WIDGET (self), 400, -1);
 
     // Validate that we retrieved our widgets
+    g_return_if_fail (GTK_IS_WIDGET (self->request_bar));
     g_return_if_fail (GTK_IS_WIDGET (self->request_code_label));
     g_return_if_fail (GTK_IS_WIDGET (self->request_duration_label));
     g_return_if_fail (GTK_IS_WIDGET (self->request_size_label));
+
+    gtk_widget_set_opacity (GTK_WIDGET (self->request_bar), 0);
 }
 
 /**
@@ -96,6 +101,17 @@ void request_response_bar_on_message_begin (SoupMessage * msg, RequestResponseBa
 
     RequestResponseBarPrivate * priv = request_response_bar_get_instance_private (self);
     priv->request_start_time = g_get_real_time ();
+
+    GtkStyleContext * context = gtk_widget_get_style_context (GTK_WIDGET (self->request_code_label));
+
+    g_return_if_fail (context != NULL);
+
+    // Cleanup previous classes if any
+    gtk_style_context_remove_class (context, "success");
+    gtk_style_context_remove_class (context, "warning");
+    gtk_style_context_remove_class (context, "error");
+
+    gtk_widget_set_opacity (GTK_WIDGET (self->request_bar), 0);
 }
 
 void request_response_bar_on_message_received (SoupMessage * msg, RequestResponseBar * self) {
@@ -107,11 +123,6 @@ void request_response_bar_on_message_received (SoupMessage * msg, RequestRespons
 
     RequestResponseBarPrivate * priv = request_response_bar_get_instance_private (self);
     GtkStyleContext * context = gtk_widget_get_style_context (GTK_WIDGET (self->request_code_label));
-
-    // Cleanup previous classes
-    gtk_style_context_remove_class (context, "success");
-    gtk_style_context_remove_class (context, "warning");
-    gtk_style_context_remove_class (context, "error");
 
     gchar * status_code = g_strdup_printf ("%u", msg->status_code);
     if (strcmp (status_code, "2") != 0) { // libsoup return 2 on error
@@ -150,6 +161,8 @@ void request_response_bar_on_message_received (SoupMessage * msg, RequestRespons
     priv->request_start_time = (gint64) 0;
 
     gtk_label_set_label (self->request_size_label, request_response_bar_get_response_size (msg->response_body->length));
+
+    gtk_widget_set_opacity (GTK_WIDGET (self->request_bar), 1);
 
     g_free (status_code);
 }
