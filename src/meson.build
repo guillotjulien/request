@@ -15,6 +15,9 @@ request_deps = [
   dependency('liburiparser'),
 ]
 
+# Only needed for development
+find_program('uncrustify', required : false)
+
 gnome = import('gnome')
 
 request_sources += gnome.compile_resources('request-resources',

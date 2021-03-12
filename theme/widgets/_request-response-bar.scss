@@ -1,25 +1,33 @@
 .request_response_bar {
-	padding: .5rem .75rem;
+    & > box {
+        padding: .5rem .25rem;
+    }
 
     label {
-        padding: .25rem;
-        margin: 0 .25rem;
+        background: #E0E0E0;
+        margin-right: 1em;
+        border: 1px solid rgba(0, 0, 0, 0.07);
+        font-size: 13px;
+        color: #555555;
+        padding: .25rem .5rem;
     }
 
     .request_response_bar__code {
         color: white;
-        padding: .25rem .5rem;
-
+        
         &.success {
             background: #82B939;
+            text-shadow: 0 0 0.05em #82B939;
         }
 
         &.warning {
             background: #E18D27;
+            text-shadow: 0 0 0.05em #E18D27;
         }
 
         &.error {
             background: #D35D54;
+            text-shadow: 0 0 0.05em #D35D54;
         }
     }
 }

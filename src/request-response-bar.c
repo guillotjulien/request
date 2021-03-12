@@ -74,7 +74,7 @@ static char * request_response_bar_get_response_size (goffset raw_length) {
 
     guint64 length = (guint64) floor (raw_length / 8);
     uint64_t multiplier = exbibytes;
-    for (int i = 0; i < sizeof (sizes) / sizeof (*(sizes)); i++, multiplier /= 1024) {
+    for (unsigned long i = 0; i < sizeof (sizes) / sizeof (*(sizes)); i++, multiplier /= 1024) {
         if (length < multiplier)
             continue;
         if (length % multiplier == 0)
@@ -107,8 +107,13 @@ void request_response_bar_on_message_received (SoupMessage * msg, RequestRespons
 
     RequestResponseBarPrivate * priv = request_response_bar_get_instance_private (self);
     GtkStyleContext * context = gtk_widget_get_style_context (GTK_WIDGET (self->request_code_label));
-    gchar * status_code = g_strdup_printf ("%u", msg->status_code);
 
+    // Cleanup previous classes
+    gtk_style_context_remove_class (context, "success");
+    gtk_style_context_remove_class (context, "warning");
+    gtk_style_context_remove_class (context, "error");
+
+    gchar * status_code = g_strdup_printf ("%u", msg->status_code);
     if (strcmp (status_code, "2") != 0) { // libsoup return 2 on error
         switch (status_code[0]) {
             case '2':
@@ -123,7 +128,7 @@ void request_response_bar_on_message_received (SoupMessage * msg, RequestRespons
                 break;
         }
 
-        gtk_label_set_label (self->request_code_label, g_strdup_printf ("%s %s", status_code, soup_status_get_phrase (msg->status_code)));
+        gtk_label_set_markup (self->request_code_label, g_strdup_printf ("<span weight='600'>%s</span> %s", status_code, soup_status_get_phrase (msg->status_code)));
         // gtk_widget_set_tooltip_text (GTK_WIDGET (self->request_code_label), soup_status_get_phrase (msg->status_code));
     } else {
         gtk_label_set_label (self->request_code_label, "error");

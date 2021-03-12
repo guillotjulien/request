@@ -2,38 +2,48 @@
 <interface>
     <requires lib="gtk+" version="4.0"/>
     <template class="RequestResponseBar" parent="GtkBox">
-        <child>
-            <object class="GtkLabel" id="request_code_label">
-                <property name="can-focus">False</property>
-                <property name="label">label</property>
-                <property name="valign">center</property>
-                <property name="justify">center</property>
-                <property name="single-line-mode">True</property>
+        <property name="orientation">vertical</property>
 
-                <style>
-                    <class name="request_response_bar__code"/>
-                </style>
+        <child>
+            <object class="GtkBox">
+                <child>
+                    <object class="GtkLabel" id="request_code_label">
+                        <property name="can-focus">False</property>
+                        <property name="label">label</property>
+                        <property name="valign">center</property>
+                        <property name="justify">center</property>
+                        <property name="single-line-mode">True</property>
+
+                        <style>
+                            <class name="request_response_bar__code"/>
+                        </style>
+                    </object>
+                </child>
+
+                <child>
+                    <object class="GtkLabel" id="request_duration_label">
+                        <property name="can-focus">False</property>
+                        <property name="label">0 ms</property>
+                        <property name="valign">center</property>
+                        <property name="justify">center</property>
+                        <property name="single-line-mode">True</property>
+                    </object>
+                </child>
+
+                <child>
+                    <object class="GtkLabel" id="request_size_label">
+                        <property name="can-focus">False</property>
+                        <property name="label">0 B</property>
+                        <property name="valign">center</property>
+                        <property name="justify">center</property>
+                        <property name="single-line-mode">True</property>
+                    </object>
+                </child>
             </object>
         </child>
 
         <child>
-            <object class="GtkLabel" id="request_duration_label">
-                <property name="can-focus">False</property>
-                <property name="label">0 ms</property>
-                <property name="valign">center</property>
-                <property name="justify">center</property>
-                <property name="single-line-mode">True</property>
-            </object>
-        </child>
-
-        <child>
-            <object class="GtkLabel" id="request_size_label">
-                <property name="can-focus">False</property>
-                <property name="label">0 B</property>
-                <property name="valign">center</property>
-                <property name="justify">center</property>
-                <property name="single-line-mode">True</property>
-            </object>
+            <object class="GtkSeparator"></object>
         </child>
 
         <style>
