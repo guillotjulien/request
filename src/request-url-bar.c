@@ -156,11 +156,9 @@ static void request_url_bar_on_request_submitted (GtkWidget * widget, gpointer d
     g_signal_connect_object (message, "starting", G_CALLBACK (request_url_bar_on_request_start), self, 0);
     g_signal_connect_object (message, "finished", G_CALLBACK (request_url_bar_on_request_end), self, 0);
 
-    soup_session_send_async (session, message, G_PRIORITY_DEFAULT, NULL, NULL); // FIXME: Using soup_session_send_async prevent us from accessing content length directly
+    soup_session_queue_message (session, message, NULL, NULL);
 
     uriFreeUriMembersA (&uri);
-    g_object_unref (message);
-    g_object_unref (session);
     g_free (verb);
     g_free (url);
 }
