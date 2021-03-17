@@ -22,6 +22,8 @@
 #include "request-window.h"
 #include "request-url-bar.h"
 #include "request-response-bar.h"
+#include "request-double-entry.h"
+#include "request-header-list.h"
 
 struct _RequestWindow {
     GtkApplicationWindow parent_instance;
@@ -144,6 +146,16 @@ static void request_window_init (RequestWindow * self) {
     self->loading_overlay = request_window_build_overlay ();
     if (self->loading_overlay != NULL) {
         gtk_grid_attach (GTK_GRID (right), self->loading_overlay, 0, 0, 1, 1);
+    }
+
+    RequestHeaderList * test = request_header_list_new ();
+    if (test != NULL) {
+        gtk_grid_attach (GTK_GRID (left), GTK_WIDGET (request_header_list_get_view (test)), 0, 1, 1, 1);
+
+        for (size_t i = 0; i < 300; i++) {
+            RequestHeaderListRow * test2 = request_header_list_row_new ();
+            request_header_list_add_row (test, test2);
+        }
     }
 }
 

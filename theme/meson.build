@@ -12,6 +12,7 @@ theme = custom_target('Theme generation',
         '_colors.scss',
         'widgets/_request-response-bar.scss',
         'widgets/_request-url-bar.scss',
+        'widgets/_request-double-entry.scss',
 	]),
 	build_by_default: true,
 )

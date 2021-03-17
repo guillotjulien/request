@@ -4,6 +4,7 @@ request_sources = [
   'request-url-bar.c',
   'request-response-bar.c',
   'request-header-list.c',
+  'request-double-entry.c',
 ]
 
 request_deps = [

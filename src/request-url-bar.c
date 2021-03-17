@@ -170,6 +170,10 @@ static void request_url_bar_class_init (RequestURLBarClass * klass) {
     gtk_widget_class_bind_template_child (widget_class, RequestURLBar, http_verb_selector);
     gtk_widget_class_bind_template_child (widget_class, RequestURLBar, url_bar);
     gtk_widget_class_bind_template_child (widget_class, RequestURLBar, send_button);
+
+    // Declare our own signals
+    g_signal_new (REQUEST_STARTED_SIGNAL, REQUEST_TYPE_URL_BAR, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__OBJECT, G_TYPE_NONE, 1, soup_message_get_type ());
+    g_signal_new (REQUEST_COMPLETED_SIGNAL, REQUEST_TYPE_URL_BAR, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__OBJECT, G_TYPE_NONE, 1, soup_message_get_type ());
 }
 
 static void request_url_bar_init (RequestURLBar * self) {
@@ -179,10 +183,6 @@ static void request_url_bar_init (RequestURLBar * self) {
     g_return_if_fail (GTK_IS_WIDGET (self->http_verb_selector));
     g_return_if_fail (GTK_IS_WIDGET (self->url_bar));
     g_return_if_fail (GTK_IS_WIDGET (self->send_button));
-
-    // Declare our own signals
-    g_signal_new (REQUEST_STARTED_SIGNAL, REQUEST_TYPE_URL_BAR, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__OBJECT, G_TYPE_NONE, 1, soup_message_get_type ());
-    g_signal_new (REQUEST_COMPLETED_SIGNAL, REQUEST_TYPE_URL_BAR, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__OBJECT, G_TYPE_NONE, 1, soup_message_get_type ());
 
     // Connect widgets signals
     g_signal_connect (self->send_button, "clicked", G_CALLBACK (request_url_bar_on_request_submitted), self);

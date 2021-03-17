@@ -2,6 +2,7 @@
 
 @import 'widgets/request-response-bar';
 @import 'widgets/request-url-bar';
+@import 'widgets/request-double-entry';
 
 overlay {
     background: rgba(255, 255, 255, 0.8);
@@ -9,4 +10,9 @@ overlay {
 
 spinner {
     color: $font;
+}
+
+row {
+    background: none;
+    animation: none;
 }

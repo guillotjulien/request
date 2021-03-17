@@ -19,12 +19,20 @@
 
 #include <gtk-4.0/gtk/gtk.h>
 
+#include "request-double-entry.h"
+
 G_BEGIN_DECLS
 
 #define REQUEST_TYPE_HEADER_LIST (request_header_list_get_type ())
+#define REQUEST_TYPE_HEADER_LIST_ROW (request_header_list_row_get_type ())
 
-G_DECLARE_FINAL_TYPE (RequestHeaderList, request_header_list, REQUEST, HEADER_LIST, GtkBox)
+G_DECLARE_FINAL_TYPE (RequestHeaderList, request_header_list, REQUEST, HEADER_LIST, GObject)
+G_DECLARE_FINAL_TYPE (RequestHeaderListRow, request_header_list_row, REQUEST, HEADER_LIST_ROW, GObject)
 
-RequestHeaderList * request_header_list_new (gboolean is_readonly);
+RequestHeaderListRow * request_header_list_row_new ();
+
+RequestHeaderList * request_header_list_new ();
+GtkWidget * request_header_list_get_view (RequestHeaderList * self);
+void request_header_list_add_row (RequestHeaderList * self, RequestHeaderListRow * row);
 
 G_END_DECLS
