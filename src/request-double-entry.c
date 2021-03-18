@@ -27,6 +27,7 @@ struct _RequestDoubleEntry {
     gboolean is_initialized;
     gboolean is_enabled;
     gboolean is_readonly;
+    gboolean is_deletion_requested;
 
     /* Template widgets */
     GtkEntry * label;
@@ -55,14 +56,39 @@ static void request_double_entry_on_entry (GtkEditable * editable, gpointer data
     g_signal_emit_by_name (self, DOUBLE_ENTRY_CHANGED_SIGNAL, self);
 }
 
+static gboolean request_double_entry_reset_deletion_requested_state (gpointer data) {
+    RequestDoubleEntry * self = data;
+
+    GtkStyleContext * context = gtk_widget_get_style_context (GTK_WIDGET (self->delete_button));
+    g_return_if_fail (context != NULL);
+
+    gtk_button_set_icon_name (self->delete_button, "delete");
+    gtk_style_context_remove_class (context, "warning");
+
+    self->is_deletion_requested = FALSE;
+
+    return FALSE;
+}
+
 static void request_double_entry_on_delete (GtkButton * button, gpointer data) {
     (void) button;
     RequestDoubleEntry * self = data;
     g_return_if_fail (self != NULL);
 
-    // TODO: Ask for confirmation before deleting the row
+    if (!self->is_deletion_requested) {
+        GtkStyleContext * context = gtk_widget_get_style_context (GTK_WIDGET (button));
+        g_return_if_fail (context != NULL);
 
-    g_signal_emit_by_name (self, DOUBLE_ENTRY_DELETE_SIGNAL, self);
+        gtk_button_set_icon_name (button, "dialog-warning");
+        gtk_style_context_add_class (context, "warning");
+
+        self->is_deletion_requested = TRUE;
+
+        // FIXME: Need to be cleared when deletion is confirmed
+        g_timeout_add_seconds (2, G_SOURCE_FUNC (request_double_entry_reset_deletion_requested_state), self);
+    } else {
+        g_signal_emit_by_name (self, DOUBLE_ENTRY_DELETE_SIGNAL, self);
+    }
 }
 
 static void request_double_entry_on_activate_toggled (GtkCheckButton * button, gpointer data) {
