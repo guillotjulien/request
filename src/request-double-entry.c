@@ -26,6 +26,7 @@ struct _RequestDoubleEntry {
 
     gboolean is_initialized;
     gboolean is_enabled;
+    gboolean is_readonly;
 
     /* Template widgets */
     GtkEntry * label;
@@ -112,24 +113,9 @@ RequestDoubleEntry * request_double_entry_new (const gchar * label, const gchar 
     g_return_if_fail (label != NULL);
     g_return_if_fail (value != NULL);
 
-    GtkEntryBuffer * label_buffer = gtk_entry_buffer_new (label, strlen (label) + 1);
-    gtk_entry_set_buffer (self->label, label_buffer);
-
-    GtkEntryBuffer * value_buffer = gtk_entry_buffer_new (value, strlen (value) + 1);
-    gtk_entry_set_buffer (self->value, value_buffer);
-
-    if (is_readonly) {
-        gtk_widget_set_visible (GTK_WIDGET (self->delete_button), FALSE);
-        gtk_widget_set_visible (GTK_WIDGET (self->disable_button), FALSE);
-        g_object_set (self->label, "editable", FALSE, NULL);
-        g_object_set (self->value, "editable", FALSE, NULL);
-        gtk_widget_set_can_focus (GTK_WIDGET (self->label), FALSE);
-        gtk_widget_set_can_focus (GTK_WIDGET (self->value), FALSE);
-    } else {
-        gtk_check_button_set_active (self->disable_button, TRUE);
-    }
-
-    // self->priv->is_readonly = is_readonly;
+    request_double_entry_set_label (self, label);
+    request_double_entry_set_value (self, value);
+    request_double_entry_set_is_read_only (self, is_readonly);
 
     return self;
 }
@@ -154,16 +140,11 @@ void request_double_entry_set_is_read_only (RequestDoubleEntry * self, gboolean 
     g_return_if_fail (GTK_IS_WIDGET (self->label));
     g_return_if_fail (GTK_IS_WIDGET (self->value));
 
-    // TODO: Store if we are readonly or not
+    self->is_readonly = is_readonly;
 
-    if (is_readonly) {
-        gtk_widget_set_visible (GTK_WIDGET (self->delete_button), FALSE);
-        gtk_widget_set_visible (GTK_WIDGET (self->disable_button), FALSE);
-        g_object_set (self->label, "editable", FALSE, NULL);
-        g_object_set (self->value, "editable", FALSE, NULL);
-        gtk_widget_set_can_focus (GTK_WIDGET (self->label), FALSE);
-        gtk_widget_set_can_focus (GTK_WIDGET (self->value), FALSE);
-    } else {
-        gtk_check_button_set_active (self->disable_button, TRUE);
-    }
+    gtk_widget_set_visible (GTK_WIDGET (self->delete_button), !is_readonly);
+    gtk_widget_set_visible (GTK_WIDGET (self->disable_button), !is_readonly);
+    g_object_set (self->label, "editable", !is_readonly, NULL);
+    g_object_set (self->value, "editable", !is_readonly, NULL);
+    gtk_check_button_set_active (self->disable_button, TRUE);
 }
