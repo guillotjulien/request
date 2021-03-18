@@ -25,6 +25,7 @@ struct _RequestDoubleEntry {
     GtkBox parent_instance;
 
     gboolean is_initialized;
+    gboolean is_enabled;
 
     /* Template widgets */
     GtkEntry * label;
@@ -68,9 +69,10 @@ static void request_double_entry_on_activate_toggled (GtkCheckButton * button, g
     RequestDoubleEntry * self = data;
     g_return_if_fail (self != NULL);
 
-    // TODO: Add style to gray out line
+    self->is_enabled = gtk_check_button_get_active (button);
 
-    g_signal_emit_by_name (self, DOUBLE_ENTRY_ACTIVATE_TOGGLED, self);
+    gtk_widget_set_sensitive (GTK_WIDGET (self->label), self->is_enabled);
+    gtk_widget_set_sensitive (GTK_WIDGET (self->value), self->is_enabled);
 }
 
 static void request_double_entry_class_init (RequestDoubleEntryClass * klass) {
@@ -83,9 +85,8 @@ static void request_double_entry_class_init (RequestDoubleEntryClass * klass) {
     gtk_widget_class_bind_template_child (widget_class, RequestDoubleEntry, delete_button);
 
     // Declare our own signals
-    g_signal_new (DOUBLE_ENTRY_CHANGED_SIGNAL, REQUEST_TYPE_DOUBLE_ENTRY, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__OBJECT, G_TYPE_NONE, 1, request_double_entry_get_type ());
-    g_signal_new (DOUBLE_ENTRY_ACTIVATE_TOGGLED, REQUEST_TYPE_DOUBLE_ENTRY, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__OBJECT, G_TYPE_NONE, 1, request_double_entry_get_type ());
-    g_signal_new (DOUBLE_ENTRY_DELETE_SIGNAL, REQUEST_TYPE_DOUBLE_ENTRY, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__OBJECT, G_TYPE_NONE, 1, request_double_entry_get_type ());
+    g_signal_new (DOUBLE_ENTRY_CHANGED_SIGNAL, REQUEST_TYPE_DOUBLE_ENTRY, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
+    g_signal_new (DOUBLE_ENTRY_DELETE_SIGNAL, REQUEST_TYPE_DOUBLE_ENTRY, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
 }
 
 static void request_double_entry_init (RequestDoubleEntry * self) {

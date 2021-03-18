@@ -152,9 +152,8 @@ static void request_window_init (RequestWindow * self) {
     if (test != NULL) {
         gtk_grid_attach (GTK_GRID (left), GTK_WIDGET (request_header_list_get_view (test)), 0, 1, 1, 1);
 
-        for (size_t i = 0; i < 300; i++) {
-            RequestHeaderListRow * test2 = request_header_list_row_new ();
-            request_header_list_add_row (test, test2);
+        for (size_t i = 0; i < 3; i++) {
+            request_header_list_row_new (test);
         }
     }
 }

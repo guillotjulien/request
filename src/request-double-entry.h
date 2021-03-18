@@ -28,7 +28,6 @@ G_DECLARE_FINAL_TYPE (RequestDoubleEntry, request_double_entry, REQUEST, DOUBLE_
 
 
 #define DOUBLE_ENTRY_CHANGED_SIGNAL "changed"
-#define DOUBLE_ENTRY_ACTIVATE_TOGGLED "activate-toggled"
 #define DOUBLE_ENTRY_DELETE_SIGNAL "delete"
 
 RequestDoubleEntry * request_double_entry_new (const gchar * label, const gchar * value, gboolean is_readonly);
