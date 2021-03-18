@@ -80,22 +80,31 @@ static GListModel * request_header_list_get_initial_list (void) {
     return G_LIST_MODEL (store);
 }
 
-static void on_row_changed_signal (RequestDoubleEntry * entries, gpointer data) {
-    (void) entries;
-    (void) data;
-
-    printf ("Changed signal received\n");
-}
-
-static void on_row_delete_signal (RequestDoubleEntry * entries, gpointer data) {
-    g_return_if_fail (GTK_IS_WIDGET (entries));
-
+static guint request_header_list_get_row_position (RequestHeaderListRow * self) {
     guint position;
-    RequestHeaderListRow * self = data;
-    GListStore * store = G_LIST_STORE (self->container->store);
 
+    GListStore * store = G_LIST_STORE (self->container->store);
     gboolean found = g_list_store_find (store, self, &position);
     g_return_if_fail (found == TRUE);
+
+    return position;
+}
+
+static void on_row_changed_signal (RequestDoubleEntry * row, gpointer data) {
+    (void) row;
+    RequestHeaderListRow * self = data;
+
+    // When we change the last row, we adds a new row on edit
+    if (request_header_list_get_row_position (self) == g_list_model_get_n_items (self->container->store) - 1) {
+        request_header_list_row_new (self->container);
+    }
+}
+
+static void on_row_delete_signal (RequestDoubleEntry * row, gpointer data) {
+    (void) row;
+    RequestHeaderListRow * self = data;
+    GListStore * store = G_LIST_STORE (self->container->store);
+    guint position = request_header_list_get_row_position (self);
 
     g_list_store_remove (store, position);
 }
@@ -118,8 +127,10 @@ static void on_bind_listitem (GtkSignalListItemFactory * factory, GtkListItem * 
     request_double_entry_set_value ((RequestDoubleEntry *) entries, row->value);
     request_double_entry_set_is_read_only ((RequestDoubleEntry *) entries, row->is_readonly);
 
-    g_signal_connect (entries, DOUBLE_ENTRY_CHANGED_SIGNAL, G_CALLBACK (on_row_changed_signal), row);
-    g_signal_connect (entries, DOUBLE_ENTRY_DELETE_SIGNAL, G_CALLBACK (on_row_delete_signal), row);
+    if (!row->is_readonly) {
+        g_signal_connect (entries, DOUBLE_ENTRY_CHANGED_SIGNAL, G_CALLBACK (on_row_changed_signal), row);
+        g_signal_connect (entries, DOUBLE_ENTRY_DELETE_SIGNAL, G_CALLBACK (on_row_delete_signal), row);
+    }
 }
 
 /**
@@ -128,9 +139,12 @@ static void on_bind_listitem (GtkSignalListItemFactory * factory, GtkListItem * 
 static void on_unbind_listitem (GtkSignalListItemFactory * factory, GtkListItem * list_item) {
     (void) factory;
 
-    GtkWidget * entries = gtk_list_item_get_child (list_item);
     RequestHeaderListRow * row = gtk_list_item_get_item (list_item);
+    if (row->is_readonly) {
+        return;
+    }
 
+    GtkWidget * entries = gtk_list_item_get_child (list_item);
     g_return_if_fail (GTK_IS_WIDGET (entries));
 
     g_signal_handlers_disconnect_by_func (entries, G_CALLBACK (on_row_changed_signal), row);
