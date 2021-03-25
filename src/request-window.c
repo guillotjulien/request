@@ -24,6 +24,7 @@
 #include "request-response-bar.h"
 #include "request-double-entry.h"
 #include "request-header-list.h"
+#include "request-response-panel.h"
 
 struct _RequestWindow {
     GtkApplicationWindow parent_instance;
@@ -35,6 +36,7 @@ struct _RequestWindow {
     /* Custom widgets */
     RequestURLBar * request_url_bar;
     RequestResponseBar * request_response_bar;
+    RequestResponsePanel * response_panel;
 };
 
 G_DEFINE_TYPE (RequestWindow, request_window, GTK_TYPE_APPLICATION_WINDOW)
@@ -50,6 +52,7 @@ static void on_request_start (RequestWindow * sender, SoupMessage * msg, gpointe
     printf ("Begin Request\n");
 
     gtk_widget_set_opacity (self->loading_overlay, 1);
+    gtk_widget_set_can_target (self->loading_overlay, TRUE);
     request_response_bar_on_message_begin (msg, self->request_response_bar);
 }
 
@@ -65,6 +68,7 @@ static void on_request_complete (RequestWindow * sender, SoupMessage * msg, gpoi
     printf ("End Request\n");
 
     gtk_widget_set_opacity (self->loading_overlay, 0);
+    gtk_widget_set_can_target (self->loading_overlay, FALSE);
     request_response_bar_on_message_received (msg, self->request_response_bar);
 }
 
@@ -75,6 +79,7 @@ static GtkWidget * request_window_build_overlay () {
     gtk_widget_set_halign (loading_overlay, GTK_ALIGN_FILL);
     gtk_widget_set_valign (loading_overlay, GTK_ALIGN_FILL);
     gtk_widget_set_opacity (loading_overlay, 0);
+    gtk_widget_set_can_target (loading_overlay, FALSE);
 
     GtkWidget * overlay_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 25);
     gtk_widget_set_halign (overlay_box, GTK_ALIGN_CENTER);
@@ -130,32 +135,46 @@ static void request_window_init (RequestWindow * self) {
     gtk_paned_set_shrink_start_child (self->main_grid, FALSE);
     gtk_paned_set_shrink_end_child (self->main_grid, FALSE);
 
-    self->request_url_bar = request_url_bar_new ();
-    if (self->request_url_bar != NULL) {
-        gtk_grid_attach (GTK_GRID (left), GTK_WIDGET (self->request_url_bar), 0, 0, 1, 1);
+    /* BUILD LEFT PANEL */
 
-        g_signal_connect (self->request_url_bar, REQUEST_STARTED_SIGNAL, G_CALLBACK (on_request_start), self);
-        g_signal_connect (self->request_url_bar, REQUEST_COMPLETED_SIGNAL, G_CALLBACK (on_request_complete), self);
-    }
+    self->request_url_bar = request_url_bar_new ();
+    g_return_if_fail (self->request_url_bar != NULL);
+
+    gtk_grid_attach (GTK_GRID (left), GTK_WIDGET (self->request_url_bar), 0, 0, 1, 1);
+
+    g_signal_connect (self->request_url_bar, REQUEST_STARTED_SIGNAL, G_CALLBACK (on_request_start), self);
+    g_signal_connect (self->request_url_bar, REQUEST_COMPLETED_SIGNAL, G_CALLBACK (on_request_complete), self);
+
+    /* BUILD RIGHT PANEL */
 
     self->request_response_bar = request_response_bar_new ();
-    if (self->request_response_bar != NULL) {
-        gtk_grid_attach (GTK_GRID (right), GTK_WIDGET (self->request_response_bar), 0, 0, 1, 1);
-    }
+    g_return_if_fail (self->request_response_bar != NULL);
+
+    gtk_grid_attach (GTK_GRID (right), GTK_WIDGET (self->request_response_bar), 0, 0, 1, 1);
+
+    self->response_panel = request_response_panel_new ();
+    g_return_if_fail (self->response_panel != NULL);
+
+    RequestHeaderList * header_list = request_response_panel_get_header_list_view (self->response_panel);
+    g_return_if_fail (header_list != NULL);
+
+    RequestHeaderListRow * r1 = request_header_list_row_new (header_list, "label 1", "value 1", FALSE);
+    RequestHeaderListRow * r2 = request_header_list_row_new (header_list, "label 2", "value 2", FALSE);
+    RequestHeaderListRow * r3 = request_header_list_row_new (header_list, "label 3", "value 3", FALSE);
+
+    GSList * l = NULL;
+    l = g_slist_append (l, r1);
+    l = g_slist_append (l, r2);
+    l = g_slist_append (l, r3);
+
+    request_response_panel_set_headers (self->response_panel, l);
+
+    gtk_grid_attach (GTK_GRID (right), request_response_panel_get_view (self->response_panel), 0, 1, 1, 1);
 
     self->loading_overlay = request_window_build_overlay ();
-    if (self->loading_overlay != NULL) {
-        gtk_grid_attach (GTK_GRID (right), self->loading_overlay, 0, 0, 1, 1);
-    }
+    g_return_if_fail (self->loading_overlay != NULL);
 
-    RequestHeaderList * test = request_header_list_new ();
-    if (test != NULL) {
-        gtk_grid_attach (GTK_GRID (left), GTK_WIDGET (request_header_list_get_view (test)), 0, 1, 1, 1);
-
-        for (size_t i = 0; i < 3; i++) {
-            request_header_list_row_new (test);
-        }
-    }
+    gtk_grid_attach (GTK_GRID (right), self->loading_overlay, 0, 0, 1, 2);
 }
 
 void request_window_set_paned_view_size (RequestWindow * self) {

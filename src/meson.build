@@ -5,6 +5,7 @@ request_sources = [
   'request-response-bar.c',
   'request-header-list.c',
   'request-double-entry.c',
+  'request-response-panel.c',
 ]
 
 request_deps = [

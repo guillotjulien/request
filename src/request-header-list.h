@@ -29,9 +29,10 @@ G_BEGIN_DECLS
 G_DECLARE_FINAL_TYPE (RequestHeaderList, request_header_list, REQUEST, HEADER_LIST, GObject)
 G_DECLARE_FINAL_TYPE (RequestHeaderListRow, request_header_list_row, REQUEST, HEADER_LIST_ROW, GObject)
 
-RequestHeaderListRow * request_header_list_row_new ();
+RequestHeaderListRow * request_header_list_row_new (RequestHeaderList * container, gchar * label, gchar * value, gboolean is_readonly);
 
-RequestHeaderList * request_header_list_new ();
+RequestHeaderList * request_header_list_new (void);
 GtkWidget * request_header_list_get_view (RequestHeaderList * self);
+void request_header_list_add_row (RequestHeaderList * self, RequestHeaderListRow * row);
 
 G_END_DECLS

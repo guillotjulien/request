@@ -47,23 +47,21 @@ struct _RequestHeaderListClass {
 G_DEFINE_TYPE (RequestHeaderListRow, request_header_list_row, G_TYPE_OBJECT);
 G_DEFINE_TYPE (RequestHeaderList, request_header_list, G_TYPE_OBJECT);
 
-static void request_header_list_row_class_init (RequestHeaderListRowClass * self) {
-    (void) self;
+static void request_header_list_row_class_init (RequestHeaderListRowClass * klass) {
+    (void) klass;
 }
 
 static void request_header_list_row_init (RequestHeaderListRow * self) {
     (void) self;
 }
 
-RequestHeaderListRow * request_header_list_row_new (RequestHeaderList * container) {
+RequestHeaderListRow * request_header_list_row_new (RequestHeaderList * container, gchar * label, gchar * value, gboolean is_readonly) {
     RequestHeaderListRow * self = g_object_new (REQUEST_TYPE_HEADER_LIST_ROW, NULL);
 
-    self->label = "test 1";
-    self->value = "test 2";
-    self->is_readonly = FALSE;
+    self->label = label;
+    self->value = value;
+    self->is_readonly = is_readonly;
     self->container = container;
-
-    g_list_store_append ((GListStore *) self->container->store, self);
 
     return self;
 }
@@ -96,7 +94,7 @@ static void on_row_changed_signal (RequestDoubleEntry * row, gpointer data) {
 
     // When we change the last row, we adds a new row on edit
     if (request_header_list_get_row_position (self) == g_list_model_get_n_items (self->container->store) - 1) {
-        request_header_list_row_new (self->container);
+        request_header_list_add_row (self->container, request_header_list_row_new (self->container, "", "", FALSE));
     }
 }
 
@@ -177,11 +175,14 @@ static void request_header_list_init (RequestHeaderList * self) {
  *
  * Issue is tracked here: https://gitlab.gnome.org/GNOME/gtk/-/issues/2971
  */
-RequestHeaderList * request_header_list_new () {
-    RequestHeaderList * self = g_object_new (REQUEST_TYPE_HEADER_LIST, NULL);
-    return self;
+RequestHeaderList * request_header_list_new (void) {
+    return g_object_new (REQUEST_TYPE_HEADER_LIST, NULL);
 }
 
 GtkWidget * request_header_list_get_view (RequestHeaderList * self) {
     return self->scroll_view;
+}
+
+void request_header_list_add_row (RequestHeaderList * self, RequestHeaderListRow * row) {
+    g_list_store_append ((GListStore *) self->store, row);
 }
