@@ -35,6 +35,8 @@ struct _RequestDoubleEntry {
     GtkCheckButton * disable_button;
     GtkButton * delete_button;
 
+    guint timeout_id;
+
     RequestDoubleEntryPrivate * priv;
 };
 
@@ -83,10 +85,9 @@ static void request_double_entry_on_delete (GtkButton * button, gpointer data) {
         gtk_style_context_add_class (context, "warning");
 
         self->is_deletion_requested = TRUE;
-
-        // FIXME: Need to be cleared when deletion is confirmed
-        g_timeout_add_seconds (2, G_SOURCE_FUNC (request_double_entry_reset_deletion_requested_state), self);
+        self->timeout_id = g_timeout_add_seconds (2, G_SOURCE_FUNC (request_double_entry_reset_deletion_requested_state), self);
     } else {
+        g_source_remove (self->timeout_id); // clear timeout
         g_signal_emit_by_name (self, DOUBLE_ENTRY_DELETE_SIGNAL, self);
     }
 }
@@ -149,14 +150,14 @@ RequestDoubleEntry * request_double_entry_new (const gchar * label, const gchar 
 void request_double_entry_set_label (RequestDoubleEntry * self, const gchar * label) {
     g_return_if_fail (GTK_IS_WIDGET (self));
 
-    GtkEntryBuffer * label_buffer = gtk_entry_buffer_new (label, strlen (label) + 1);
+    GtkEntryBuffer * label_buffer = gtk_entry_buffer_new (label, strlen (label));
     gtk_entry_set_buffer (self->label, label_buffer);
 }
 
 void request_double_entry_set_value (RequestDoubleEntry * self, const gchar * value) {
     g_return_if_fail (GTK_IS_WIDGET (self->value));
 
-    GtkEntryBuffer * value_buffer = gtk_entry_buffer_new (value, strlen (value) + 1);
+    GtkEntryBuffer * value_buffer = gtk_entry_buffer_new (value, strlen (value));
     gtk_entry_set_buffer (self->value, value_buffer);
 }
 
