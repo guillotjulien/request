@@ -67,7 +67,7 @@ RequestHeaderList * request_response_panel_get_header_list_view (RequestResponse
 }
 
 void request_response_panel_set_headers (RequestResponsePanel * self, GSList * headers) {
-    // TODO: empty response panel first
+    request_header_list_empty (self->header_list); // clear previous headers
     while (headers != NULL) {
         RequestHeaderListRow * row = (RequestHeaderListRow *) headers->data;
         headers = headers->next;

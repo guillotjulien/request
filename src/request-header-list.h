@@ -34,5 +34,6 @@ RequestHeaderListRow * request_header_list_row_new (RequestHeaderList * containe
 RequestHeaderList * request_header_list_new (void);
 GtkWidget * request_header_list_get_view (RequestHeaderList * self);
 void request_header_list_add_row (RequestHeaderList * self, RequestHeaderListRow * row);
+void request_header_list_empty (RequestHeaderList * self);
 
 G_END_DECLS

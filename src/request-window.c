@@ -37,6 +37,7 @@ struct _RequestWindow {
     RequestURLBar * request_url_bar;
     RequestResponseBar * request_response_bar;
     RequestResponsePanel * response_panel;
+    RequestHeaderList * response_header_list;
 };
 
 G_DEFINE_TYPE (RequestWindow, request_window, GTK_TYPE_APPLICATION_WINDOW)
@@ -48,8 +49,6 @@ static void on_request_start (RequestWindow * sender, SoupMessage * msg, gpointe
     g_return_if_fail (self != NULL);
     g_return_if_fail (msg != NULL);
     g_return_if_fail (SOUP_IS_MESSAGE (msg));
-
-    printf ("Begin Request\n");
 
     gtk_widget_set_opacity (self->loading_overlay, 1);
     gtk_widget_set_can_target (self->loading_overlay, TRUE);
@@ -65,11 +64,22 @@ static void on_request_complete (RequestWindow * sender, SoupMessage * msg, gpoi
     g_return_if_fail (SOUP_IS_MESSAGE (msg));
     g_return_if_fail (GTK_IS_WIDGET (self->request_response_bar));
 
-    printf ("End Request\n");
-
     gtk_widget_set_opacity (self->loading_overlay, 0);
     gtk_widget_set_can_target (self->loading_overlay, FALSE);
     request_response_bar_on_message_received (msg, self->request_response_bar);
+
+    SoupMessageHeadersIter iter;
+    soup_message_headers_iter_init (&iter, msg->response_headers);
+
+    GSList * l = NULL;
+    const char * header_name;
+    const char * header_value;
+    while (soup_message_headers_iter_next (&iter, &header_name, &header_value)) {
+        RequestHeaderListRow * row = request_header_list_row_new (self->response_header_list, (gchar *) header_name, (gchar *) header_value, TRUE);
+        l = g_slist_append (l, row);
+    }
+
+    request_response_panel_set_headers (self->response_panel, l);
 }
 
 static GtkWidget * request_window_build_overlay () {
@@ -155,19 +165,8 @@ static void request_window_init (RequestWindow * self) {
     self->response_panel = request_response_panel_new ();
     g_return_if_fail (self->response_panel != NULL);
 
-    RequestHeaderList * header_list = request_response_panel_get_header_list_view (self->response_panel);
-    g_return_if_fail (header_list != NULL);
-
-    RequestHeaderListRow * r1 = request_header_list_row_new (header_list, "label 1", "value 1", FALSE);
-    RequestHeaderListRow * r2 = request_header_list_row_new (header_list, "label 2", "value 2", FALSE);
-    RequestHeaderListRow * r3 = request_header_list_row_new (header_list, "label 3", "value 3", FALSE);
-
-    GSList * l = NULL;
-    l = g_slist_append (l, r1);
-    l = g_slist_append (l, r2);
-    l = g_slist_append (l, r3);
-
-    request_response_panel_set_headers (self->response_panel, l);
+    self->response_header_list = request_response_panel_get_header_list_view (self->response_panel);
+    g_return_if_fail (self->response_header_list != NULL);
 
     gtk_grid_attach (GTK_GRID (right), request_response_panel_get_view (self->response_panel), 0, 1, 1, 1);
 

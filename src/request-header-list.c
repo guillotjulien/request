@@ -186,3 +186,7 @@ GtkWidget * request_header_list_get_view (RequestHeaderList * self) {
 void request_header_list_add_row (RequestHeaderList * self, RequestHeaderListRow * row) {
     g_list_store_append ((GListStore *) self->store, row);
 }
+
+void request_header_list_empty (RequestHeaderList * self) {
+    g_list_store_remove_all ((GListStore *) self->store);
+}
