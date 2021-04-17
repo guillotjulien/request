@@ -28,6 +28,7 @@ struct _RequestDoubleEntry {
     gboolean is_enabled;
     gboolean is_readonly;
     gboolean is_deletion_requested;
+    guint timeout_id;
 
     /* Template widgets */
     GtkEntry * label;
@@ -35,7 +36,6 @@ struct _RequestDoubleEntry {
     GtkCheckButton * disable_button;
     GtkButton * delete_button;
 
-    guint timeout_id;
 
     RequestDoubleEntryPrivate * priv;
 };
@@ -142,7 +142,7 @@ RequestDoubleEntry * request_double_entry_new (const gchar * label, const gchar 
 
     request_double_entry_set_label (self, label);
     request_double_entry_set_value (self, value);
-    request_double_entry_set_is_read_only (self, is_readonly);
+    request_double_entry_set_is_readonly (self, is_readonly);
 
     return self;
 }
@@ -161,7 +161,7 @@ void request_double_entry_set_value (RequestDoubleEntry * self, const gchar * va
     gtk_entry_set_buffer (self->value, value_buffer);
 }
 
-void request_double_entry_set_is_read_only (RequestDoubleEntry * self, gboolean is_readonly) {
+void request_double_entry_set_is_readonly (RequestDoubleEntry * self, gboolean is_readonly) {
     g_return_if_fail (GTK_IS_WIDGET (self->delete_button));
     g_return_if_fail (GTK_IS_WIDGET (self->disable_button));
     g_return_if_fail (GTK_IS_WIDGET (self->label));

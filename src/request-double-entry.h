@@ -33,6 +33,6 @@ G_DECLARE_FINAL_TYPE (RequestDoubleEntry, request_double_entry, REQUEST, DOUBLE_
 RequestDoubleEntry * request_double_entry_new (const gchar * label, const gchar * value, gboolean is_readonly);
 void request_double_entry_set_label (RequestDoubleEntry * self, const gchar * label);
 void request_double_entry_set_value (RequestDoubleEntry * self, const gchar * value);
-void request_double_entry_set_is_read_only (RequestDoubleEntry * self, gboolean is_readonly);
+void request_double_entry_set_is_readonly (RequestDoubleEntry * self, gboolean is_readonly);
 
 G_END_DECLS

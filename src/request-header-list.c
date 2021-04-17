@@ -123,7 +123,7 @@ static void on_bind_listitem (GtkSignalListItemFactory * factory, GtkListItem * 
 
     request_double_entry_set_label ((RequestDoubleEntry *) entries, row->label);
     request_double_entry_set_value ((RequestDoubleEntry *) entries, row->value);
-    request_double_entry_set_is_read_only ((RequestDoubleEntry *) entries, row->is_readonly);
+    request_double_entry_set_is_readonly ((RequestDoubleEntry *) entries, row->is_readonly);
 
     if (!row->is_readonly) {
         g_signal_connect (entries, DOUBLE_ENTRY_CHANGED_SIGNAL, G_CALLBACK (on_row_changed_signal), row);
