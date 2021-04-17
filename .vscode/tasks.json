@@ -6,22 +6,52 @@
         {
             "label": "configure",
             "type": "shell",
-            "command": "meson build"
+            "command": "meson build",
+            "presentation": {
+                "reveal": "silent",
+                "showReuseMessage": false,
+                "clear": true,
+            }
         },
         {
             "label": "build",
             "type": "shell",
-            "command": "ninja -C build"
+            "command": "ninja -C build",
+            "presentation": {
+                "reveal": "silent",
+                "showReuseMessage": false,
+                "clear": true,
+            }
         },
         {
             "label": "run",
             "type": "shell",
-            "command": "G_MESSAGES_DEBUG=all ./build/src/request"
+            "command": "G_MESSAGES_DEBUG=all ./build/src/request",
+            "presentation": {
+                "reveal": "silent",
+                "showReuseMessage": false,
+                "clear": true,
+            }
         },
         {
             "label": "format",
             "type": "shell",
-            "command": "find src/ \\( -name \"*.c\" -o -name \"*.h\" \\) -exec uncrustify -c uncrustify.cfg --no-backup --if-changed {} +"
-        }
+            "command": "find src/ \\( -name \"*.c\" -o -name \"*.h\" \\) -exec uncrustify -c uncrustify.cfg --no-backup --if-changed {} +",
+            "presentation": {
+                "reveal": "silent",
+                "showReuseMessage": false,
+                "clear": true,
+            }
+        },
+        {
+            "label": "build debug meson",
+            "type": "shell",
+            "command": "meson build --buildtype=debug && ninja -C build",
+            "presentation": {
+                "reveal": "silent",
+                "showReuseMessage": false,
+                "clear": true,
+            }
+        },
     ]
 }
