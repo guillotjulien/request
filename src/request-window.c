@@ -25,6 +25,7 @@
 #include "request-double-entry.h"
 #include "request-header-list.h"
 #include "request-response-panel.h"
+#include "request-source-view.h"
 
 struct _RequestWindow {
     GtkApplicationWindow parent_instance;
@@ -38,6 +39,7 @@ struct _RequestWindow {
     RequestResponseBar * request_response_bar;
     RequestResponsePanel * response_panel;
     RequestHeaderList * response_header_list;
+    RequestSourceView * request_source_view;
 };
 
 G_DEFINE_TYPE (RequestWindow, request_window, GTK_TYPE_APPLICATION_WINDOW)
@@ -49,6 +51,10 @@ static void on_request_start (RequestWindow * sender, SoupMessage * msg, gpointe
     g_return_if_fail (self != NULL);
     g_return_if_fail (msg != NULL);
     g_return_if_fail (SOUP_IS_MESSAGE (msg));
+
+    const gchar * text = request_source_view_get_text (self->request_source_view);
+
+    printf ("Text: %s\n", text);
 
     gtk_widget_set_opacity (self->loading_overlay, 1);
     gtk_widget_set_can_target (self->loading_overlay, TRUE);
@@ -174,6 +180,11 @@ static void request_window_init (RequestWindow * self) {
     g_return_if_fail (self->loading_overlay != NULL);
 
     gtk_grid_attach (GTK_GRID (right), self->loading_overlay, 0, 0, 1, 2);
+
+    self->request_source_view = request_source_view_new (FALSE);
+    g_return_if_fail (self->request_source_view != NULL);
+
+    gtk_grid_attach (GTK_GRID (left), GTK_WIDGET (self->request_source_view), 0, 1, 1, 1);
 }
 
 void request_window_set_paned_view_size (RequestWindow * self) {

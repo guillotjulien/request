@@ -6,11 +6,25 @@
     "configurations": [
         {
             "name": "(gdb) Launch",
-            "type": "gdb",
+            "type": "cppdbg",
             "request": "launch",
-            "target": "G_MESSAGES_DEBUG=all ./build/src/request",
+            "program": "${workspaceRoot}/build/src/request",
             "cwd": "${workspaceRoot}",
-            "preLaunchTask": "build debug meson"
+            "preLaunchTask": "build debug meson",
+            "externalConsole": false,
+            "environment": [
+                {
+                    "name": "G_MESSAGES_DEBUG",
+                    "value": "all",
+                },
+            ],
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
         }
     ]
 }

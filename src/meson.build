@@ -6,6 +6,7 @@ request_sources = [
   'request-header-list.c',
   'request-double-entry.c',
   'request-response-panel.c',
+  'request-source-view.c',
 ]
 
 request_deps = [
@@ -15,6 +16,8 @@ request_deps = [
   dependency('libsoup-2.4'),
   dependency('libcurl'),
   dependency('liburiparser'),
+  dependency('gtksourceview-5'),
+  dependency('jansson'),
 ]
 
 # Only needed for development

@@ -5,6 +5,7 @@
     <file compressed="true" preprocess="xml-stripblanks">resources/ui/request-url-bar.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">resources/ui/request-response-bar.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">resources/ui/request-double-entry.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">resources/ui/request-source-view.ui</file>
 
     <file alias="style.css">../theme/style.css</file>
   </gresource>
