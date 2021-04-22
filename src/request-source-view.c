@@ -43,8 +43,9 @@ G_DEFINE_TYPE (RequestSourceView, request_source_view, GTK_TYPE_BOX);
 static gchar * request_source_view_get_beautified_json (const gchar * text) {
     json_error_t * error = NULL;
     json_t * json = json_loads (text, JSON_DECODE_ANY, error);
-
-    g_return_if_fail (error == NULL);
+    if (json == NULL) { // Don't segfault when beautifying a incorrect JSON: e.g {"a":"a",}
+        return (gchar *) text;
+    }
 
     return (gchar *) json_dumps (json, JSON_INDENT (4) | JSON_PRESERVE_ORDER);
 }
@@ -52,8 +53,9 @@ static gchar * request_source_view_get_beautified_json (const gchar * text) {
 static gchar * request_source_view_get_minified_json (const gchar * text) {
     json_error_t * error = NULL;
     json_t * json = json_loads (text, JSON_DECODE_ANY, error);
-
-    g_return_if_fail (error == NULL);
+    if (json == NULL) { // Don't segfault when beautifying a incorrect JSON: e.g {"a":"a",}
+        return (gchar *) text;
+    }
 
     return (gchar *) json_dumps (json, JSON_COMPACT | JSON_PRESERVE_ORDER);
 }
