@@ -40,9 +40,29 @@ struct _RequestWindow {
     RequestResponsePanel * response_panel;
     RequestHeaderList * response_header_list;
     RequestSourceView * request_source_view;
+    RequestSourceView * response_source_view;
 };
 
 G_DEFINE_TYPE (RequestWindow, request_window, GTK_TYPE_APPLICATION_WINDOW)
+
+static gchar * request_window_get_utf8_encoded_body_data (SoupMessage * msg) {
+    GError * conversion_error = NULL;
+    GMatchInfo * match_info = NULL;
+
+    const gchar * content_type = soup_message_headers_get_one (msg->response_headers, "Content-Type");
+    const gchar * body_data = msg->response_body->data;
+    const gchar * pattern = "charset=(?<charset>.+)";
+    const GRegex * regex = g_regex_new (pattern, G_REGEX_CASELESS, G_REGEX_MATCH_NOTEMPTY, NULL);
+
+    gboolean match = g_regex_match (regex, content_type, G_REGEX_MATCH_NOTEMPTY, &match_info);
+    g_return_if_fail (match == TRUE);
+
+    const gchar * charset = g_match_info_fetch_named (match_info, "charset");
+    const gchar * encoded_text = g_convert (body_data, strlen (body_data), "UTF-8", charset, NULL, NULL, &conversion_error);
+    g_return_if_fail (conversion_error == 0x0);
+
+    return (gchar *) encoded_text;
+}
 
 static void on_request_start (RequestWindow * sender, SoupMessage * msg, gpointer data) {
     (void) sender; // We don't use sender directly as it doesn't contain a reference to the widgets of request_response_bar...
@@ -86,6 +106,11 @@ static void on_request_complete (RequestWindow * sender, SoupMessage * msg, gpoi
     }
 
     request_response_panel_set_headers (self->response_panel, l);
+
+    const gchar * body_data = request_window_get_utf8_encoded_body_data (msg);
+    g_return_if_fail (body_data != NULL);
+
+    request_source_view_set_text (self->response_source_view, (gchar *) body_data);
 }
 
 static GtkWidget * request_window_build_overlay () {
@@ -173,6 +198,9 @@ static void request_window_init (RequestWindow * self) {
 
     self->response_header_list = request_response_panel_get_header_list_view (self->response_panel);
     g_return_if_fail (self->response_header_list != NULL);
+
+    self->response_source_view = request_response_panel_get_source_view (self->response_panel);
+    g_return_if_fail (self->response_source_view != NULL);
 
     gtk_grid_attach (GTK_GRID (right), request_response_panel_get_view (self->response_panel), 0, 1, 1, 1);
 

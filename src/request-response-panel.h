@@ -20,6 +20,7 @@
 #include <gtk-4.0/gtk/gtk.h>
 
 #include "request-header-list.h"
+#include "request-source-view.h"
 
 G_BEGIN_DECLS
 
@@ -30,6 +31,7 @@ G_DECLARE_FINAL_TYPE (RequestResponsePanel, request_response_panel, REQUEST, RES
 RequestResponsePanel * request_response_panel_new (void);
 GtkWidget * request_response_panel_get_view (RequestResponsePanel * self);
 RequestHeaderList * request_response_panel_get_header_list_view (RequestResponsePanel * self);
+RequestSourceView * request_response_panel_get_source_view (RequestResponsePanel * self);
 void request_response_panel_set_headers (RequestResponsePanel * self, GSList * headers);
 
 G_END_DECLS

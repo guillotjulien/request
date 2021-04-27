@@ -48,7 +48,7 @@
             "type": "shell",
             "command": "meson build --buildtype=debug && ninja -C build",
             "presentation": {
-                "reveal": "silent",
+                // "reveal": "silent",
                 "showReuseMessage": false,
                 "clear": true,
             }

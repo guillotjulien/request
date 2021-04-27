@@ -19,6 +19,7 @@
 
 #include "request-response-panel.h"
 #include "request-header-list.h"
+#include "request-source-view.h"
 
 struct _RequestResponsePanel {
     GObject parent_instance;
@@ -26,6 +27,7 @@ struct _RequestResponsePanel {
     GtkNotebook * container;
 
     RequestHeaderList * header_list;
+    RequestSourceView * source_view;
 };
 
 struct _RequestResponsePanelClass {
@@ -50,9 +52,14 @@ RequestResponsePanel * request_response_panel_new (void) {
     self->header_list = request_header_list_new ();
     g_return_if_fail (self->header_list != NULL);
 
+    self->source_view = request_source_view_new (TRUE);
+    g_return_if_fail (self->source_view != NULL);
+
     // TODO: Create a RequestLabelWithBadge widget
+    GtkWidget * body_label = gtk_label_new ("Body"); // FIXME: Handle translations
     GtkWidget * header_list_label = gtk_label_new ("Headers"); // FIXME: Handle translations
 
+    gtk_notebook_append_page (self->container, GTK_WIDGET (self->source_view), GTK_WIDGET (body_label));
     gtk_notebook_append_page (self->container, GTK_WIDGET (request_header_list_get_view (self->header_list)), GTK_WIDGET (header_list_label));
 
     return self;
@@ -64,6 +71,10 @@ GtkWidget * request_response_panel_get_view (RequestResponsePanel * self) {
 
 RequestHeaderList * request_response_panel_get_header_list_view (RequestResponsePanel * self) {
     return self->header_list;
+}
+
+RequestSourceView * request_response_panel_get_source_view (RequestResponsePanel * self) {
+    return self->source_view;
 }
 
 void request_response_panel_set_headers (RequestResponsePanel * self, GSList * headers) {
