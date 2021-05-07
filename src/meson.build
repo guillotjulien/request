@@ -14,7 +14,6 @@ request_deps = [
   dependency('gio-2.0', version: '>= 2.50'),
   dependency('gtk4', version: '>= 4.0'),
   dependency('libsoup-2.4'),
-  dependency('libcurl'),
   dependency('liburiparser'),
   dependency('gtksourceview-5'),
   dependency('jansson'),
